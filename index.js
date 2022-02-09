@@ -1,60 +1,74 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "antd/dist/antd.css";
-import "./index.css";
-import { List, message, Avatar, Spin } from "antd";
-import reqwest from "reqwest";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import 'antd/dist/antd.css';
+import './index.css';
+import { List, message, Avatar, Spin } from 'antd';
+import reqwest from 'reqwest';
 
-import InfiniteScroll from "react-infinite-scroller";
+import InfiniteScroll from 'react-infinite-scroller';
 
+const types = {
+  server: {
+    id: 1,
+    icon: '',
+    title: 'SERVER',
+    subtypes: [{}],
+  },
+};
+const getType = (id) => {
+  const { icon, title, subtupes } = types[id];
+
+  return types[id];
+};
 const fakeDataUrl =
-  "https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo";
+  'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
 
 class InfiniteListExample extends React.Component {
   state = {
     data: [],
     loading: false,
-    hasMore: true
+    hasMore: true,
   };
 
   componentDidMount() {
-    this.fetchData(res => {
+    this.fetchData((res) => {
       this.setState({
-        data: res.results
+        data: res.results,
       });
     });
   }
 
-  fetchData = callback => {
+  fetchData = (callback) => {
     reqwest({
       url: fakeDataUrl,
-      type: "json",
-      method: "get",
-      contentType: "application/json",
-      success: res => {
+      type: 'json',
+      method: 'get',
+      contentType: 'application/json',
+      success: (res) => {
         callback(res);
-      }
+      },
     });
   };
 
   handleInfiniteOnLoad = () => {
     let { data } = this.state;
     this.setState({
-      loading: true
+      loading: true,
     });
     if (data.length > 14) {
-      message.warning("Infinite List loaded all");
+      message.warning('Infinite List loaded all');
       this.setState({
         hasMore: false,
-        loading: false
+        loading: false,
       });
       return;
     }
-    this.fetchData(res => {
+    this.fetchData((res) => {
       data = data.concat(res.results);
+      
       this.setState({
         data,
-        loading: false
+        loading: false,
       });
     });
   };
@@ -71,14 +85,16 @@ class InfiniteListExample extends React.Component {
         >
           <List
             dataSource={this.state.data}
-            renderItem={item => (
+            renderItem={(item) => (
               <List.Item key={item.id}>
                 <List.Item.Meta
-                  avatar={"o"}
+                  avatar={'o'}
                   title={<a href="#">{item.name.last}</a>}
                   description={item.email}
                 />
-                <div>Content</div>
+                <div>
+                  <b>Content</b>
+                </div>
               </List.Item>
             )}
           >
@@ -94,4 +110,4 @@ class InfiniteListExample extends React.Component {
   }
 }
 
-ReactDOM.render(<InfiniteListExample />, document.getElementById("container"));
+ReactDOM.render(<InfiniteListExample />, document.getElementById('container'));
